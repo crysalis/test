@@ -1,0 +1,49 @@
+---
+- hosts: all
+  user: admin
+  sudo: true
+
+  pre_tasks:
+
+   - name: install basic packages
+     apt: pkg={{ item }} state=latest update_cache=yes 
+     with_items:
+     - mc
+     - screen
+     - rsync
+     - vim
+     - pwgen
+     - fail2ban
+     - duplicity
+     - curl
+     - strace
+     - htop
+     - iotop
+     - locate
+     - less
+     - sudo
+     - ntpdate
+     - python-pip
+     - postgresql-client
+
+   - name: Install psycopg2 for PostgreSQL
+     pip:
+      name: psycopg2-binary
+      state: latest
+
+
+   - name: Create PostgreSQL user
+     postgresql_user:
+      name: <newuser>
+      password: <newuser_password>
+      db: <testdb>
+      priv: "all/<tables>:select"
+      port: 5432
+      state: present
+      login_host: <postgres.********.eu-central-1.rds.amazonaws.com>
+      login_user: <root_user_postgresql>
+      login_password: <root_user_postgresql_password>
+
+  roles:
+     - role: ansible-role-docker
+       docker_install_compose: true

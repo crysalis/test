@@ -1,0 +1,2 @@
+[apps]
+app-test ansible_host=777.888.999.999
